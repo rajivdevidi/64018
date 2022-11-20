@@ -1,0 +1,80 @@
+---
+title: "QMM-6-Integer Programming"
+author: "RAJIV"
+date: "2022-11-20"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r}
+
+library("lpSolve")
+library("lpSolveAPI")
+
+AP = read.lp("C:\\Users\\rajiv\\OneDrive\\Desktop\\AP_HUB_QMM6.lp")
+
+```
+
+```{r}
+DAY_AND_WORKERS = matrix(c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",18,27,22,26,25,21,19),ncol = 2, byrow = F) 
+
+colnames(DAY_AND_WORKERS) = c("Days_Of_The_Week","Workers_Required")
+
+as.table(DAY_AND_WORKERS)
+
+```
+
+```{r}
+Shift_DaysOff_Wage <- matrix(c(1,2,3,4,5,6,7,"Sunday and Monday","Monday and Tuesday","Tuesday and Wednesday","Wednesday and Thursday","Thursday and Friday","Friday and Saturday","Saturday and Sunday","$775","$800","$800","$800","$800","$775","$750"), ncol = 3, byrow = F)
+
+colnames(Shift_DaysOff_Wage) <- c("Shift", "Days_Off", "Wage")
+
+as.table(Shift_DaysOff_Wage)
+
+```
+
+```{r}
+solve(AP)
+
+```
+
+```{r}
+get.objective(AP)
+
+```
+
+```{r}
+
+get.variables(AP)
+
+```
+
+From the above we can derive the following
+
+x1=2 which indicates that for shift1,  2 workers are assigned, 
+like wise  for shift 2 , shift 3, shift 4, shift 5, shift 6, shift 7 we can say
+that 4, 5, 0, 8, 1, 13 (where x2 = 4, x3 = 5, x4 = 0, x5 = 8, x6 = 1, x7 = 13) 
+respectively  have been assigned for all the shifts.  
+
+
+By using the variables from the lp model 
+
+```{r}
+Table = matrix(c(0,4,5,0,8,1,0,0,0,5,0,8,1,13,2,0,0,0,8,1,13,2,4,0,0,8,1,13,2,4,5,0,0,1,13,2,3,4,0,0,0,13,2,4,5,0,8,0,0),ncol=7,byrow=TRUE)
+
+colnames(Table) = c("Shift1", "Shift2", "Shift3", "Shift4", "Shift5", "Shift6", "Shift7")
+
+row.names(Table) = c('Sunday', 'Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday')
+
+Table
+
+```
+
+The below table shows employees  available each day based on the shift arrangement that reduces the overall wage cost.
+
+```{r}
+
+rowSums(Table)
+
+```
